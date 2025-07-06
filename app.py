@@ -208,6 +208,12 @@ def test_models():
     """Página de prueba para el selector de modelos"""
     return render_template('test_models.html')
 
+
+@app.route('/test_css')
+def test_css():
+    """Página de prueba CSS"""
+    return render_template('test_css.html')
+
 if __name__ == '__main__':
     # Verificar conexión con Ollama
     if ollama_client.is_connected():
