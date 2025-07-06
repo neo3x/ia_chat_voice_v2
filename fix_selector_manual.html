@@ -1,0 +1,35 @@
+<!-- Agregar esto al final de index.html, antes de </body> -->
+<script>
+// Fix directo para el selector de modelos
+window.addEventListener('load', () => {
+    console.log('Aplicando fix del selector...');
+    
+    // Esperar un poco para asegurar que todo esté cargado
+    setTimeout(async () => {
+        try {
+            // Obtener modelos directamente
+            const response = await fetch('/api/models');
+            const data = await response.json();
+            
+            const select = document.getElementById('modelSelect');
+            if (select && data.models) {
+                select.innerHTML = '';
+                
+                data.models.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model.name;
+                    option.textContent = `${model.name} (${(model.size / (1024*1024*1024)).toFixed(1)} GB)`;
+                    if (model.name === data.current) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+                
+                console.log('Selector actualizado con fix directo');
+            }
+        } catch (err) {
+            console.error('Error en fix directo:', err);
+        }
+    }, 2000);
+});
+</script>

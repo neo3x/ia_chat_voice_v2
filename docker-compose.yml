@@ -1,0 +1,45 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+    # Si no tienes GPU, comenta las líneas del deploy
+
+  voice-chat:
+    build: .
+    container_name: voice-chat
+    ports:
+      - "7860:7860"
+      - "7863:7863"
+    environment:
+      - OLLAMA_HOST=ollama
+      - OLLAMA_PORT=11434
+      - ENABLE_HTTPS=true
+      - WHISPER_DEVICE=${WHISPER_DEVICE:-cpu}  # Auto-detecta o usa CPU
+    volumes:
+      - ./certs:/app/certs
+    depends_on:
+      - ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+    # Si no tienes GPU, comenta las líneas del deploy
+
+volumes:
+  ollama_data:

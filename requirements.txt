@@ -1,0 +1,22 @@
+# Servidor web
+flask==3.0.0
+werkzeug==3.0.1
+
+# Cliente HTTP
+requests==2.31.0
+
+# Procesamiento de audio
+numpy==1.24.3
+soundfile==0.12.1
+
+# Speech-to-Text
+openai-whisper==20231117
+
+# Text-to-Speech
+edge-tts==6.1.10
+
+# Utilidades
+python-dotenv==1.0.0
+
+# SSL
+pyOpenSSL==23.3.0

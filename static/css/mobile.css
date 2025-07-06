@@ -1,0 +1,154 @@
+ /* Estilos para dispositivos móviles */
+@media (max-width: 968px) {
+    .header {
+        padding: 0.5rem 1rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .header h1 {
+        font-size: 1.2rem;
+    }
+    
+    .header .subtitle {
+        display: none;
+    }
+    
+    .model-selector {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .model-selector select {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .https-notice {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    .main-container {
+        flex-direction: column-reverse;
+        padding: 0.5rem;
+        height: calc(100vh - 80px);
+        gap: 0.5rem;
+    }
+
+    .voice-panel {
+        width: 100%;
+        height: 40%;
+        min-height: 250px;
+        padding: 1rem;
+        flex-shrink: 0;
+        overflow-y: auto;
+    }
+    
+    .chat-section {
+        flex: 1;
+        height: 60%;
+        min-height: 0;
+    }
+    
+    .voice-button-container {
+        margin: 0.5rem 0;
+    }
+    
+    .voice-btn {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .voice-btn i {
+        font-size: 2rem;
+    }
+    
+    .voice-header h2 {
+        font-size: 1.1rem;
+    }
+    
+    .voice-header p {
+        font-size: 0.8rem;
+    }
+    
+    .voice-status {
+        font-size: 0.9rem;
+        padding: 0.75rem;
+    }
+    
+    .settings-section {
+        display: none;
+    }
+    
+    .recording-mode {
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .recording-mode label {
+        font-size: 0.7rem;
+    }
+    
+    .toggle-switch {
+        width: 40px;
+        height: 20px;
+    }
+    
+    .slider:before {
+        height: 14px;
+        width: 14px;
+        left: 3px;
+        bottom: 3px;
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(20px);
+    }
+
+    .message-content {
+        max-width: 90%;
+    }
+    
+    .message-bubble {
+        font-size: 0.9rem;
+        padding: 0.75rem 1rem;
+    }
+    
+    .message-time {
+        font-size: 0.7rem;
+    }
+    
+    .chat-messages {
+        padding: 0.5rem;
+        gap: 0.5rem;
+    }
+    
+    .input-section {
+        padding: 0.75rem;
+        gap: 0.5rem;
+    }
+    
+    input[type="text"] {
+        font-size: 0.9rem;
+        padding: 0.7rem 1rem;
+    }
+    
+    .send-btn {
+        padding: 0.7rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .send-btn i {
+        display: none;
+    }
+    
+    .audio-player {
+        padding: 0.5rem;
+    }
+    
+    .audio-player audio {
+        height: 32px;
+    }
+}

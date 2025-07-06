@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="header">
+    <div>
+        <h1><i class="fas fa-robot"></i> AI Voice Assistant</h1>
+        <div class="subtitle">Chat inteligente con voz bidireccional</div>
+    </div>
+    <div class="model-selector">
+        <div class="status-indicator">
+            <span class="status-dot"></span>
+            <span>Conectado</span>
+            {% if is_https %}
+            <div class="https-notice">
+                <i class="fas fa-lock"></i>
+                <span>Conexión segura</span>
+            </div>
+            {% endif %}
+        </div>
+        <select id="modelSelect" onchange="voiceChat.changeModel()">
+            <option value="">Cargando modelos...</option>
+        </select>
+    </div>
+</div>
+
+<div class="main-container">
+    <div class="chat-section">
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble">
+                        ¡Hola! Soy tu asistente de voz. Puedes escribir o usar el micrófono para hablar conmigo.
+                    </div>
+                    <div class="message-time"></div>
+                </div>
+            </div>
+        </div>
+        <div class="input-section">
+            <div class="input-wrapper">
+                <input type="text" id="textInput" placeholder="Escribe tu mensaje..." />
+            </div>
+            <button class="send-btn" onclick="voiceChat.sendText()" id="sendBtn">
+                <i class="fas fa-paper-plane"></i>
+                Enviar
+            </button>
+        </div>
+    </div>
+
+    <div class="voice-panel">
+        <div class="voice-header">
+            <h2><i class="fas fa-microphone-alt"></i> Control de Voz</h2>
+            <p id="voiceInstruction">Click para iniciar/detener grabación</p>
+        </div>
+
+        <div class="recording-mode">
+            <label>
+                <span>Modo: Mantener presionado</span>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="recordingModeToggle" onchange="voiceChat.toggleRecordingMode()">
+                    <span class="slider"></span>
+                </div>
+                <span>Click para grabar</span>
+            </label>
+        </div>
+
+        <div class="voice-button-container">
+            <button class="voice-btn" id="voiceBtn">
+                <i class="fas fa-microphone" id="micIcon"></i>
+            </button>
+        </div>
+
+        <div class="voice-status" id="voiceStatus">
+            <span>Listo para grabar</span>
+        </div>
+
+        <div class="settings-section">
+            <h3><i class="fas fa-cog"></i> Configuración</h3>
+            <div class="setting-item">
+                <label>Voz del asistente</label>
+                <select id="voiceSelect" onchange="uiController.changeVoice()">
+                    <option value="es-MX-DaliaNeural">Dalia (México)</option>
+                    <option value="es-MX-JorgeNeural">Jorge (México)</option>
+                    <option value="es-ES-AlvaroNeural">Álvaro (España)</option>
+                    <option value="es-ES-ElviraNeural">Elvira (España)</option>
+                    <option value="es-AR-TomasNeural">Tomás (Argentina)</option>
+                    <option value="es-AR-ElenaNeural">Elena (Argentina)</option>
+                </select>
+            </div>
+            <div class="setting-item">
+                <label>Idioma de reconocimiento</label>
+                <select id="languageSelect" onchange="uiController.changeLanguage()">
+                    <option value="es">Español</option>
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                    <option value="it">Italiano</option>
+                    <option value="pt">Português</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="audio-player" id="audioPlayer">
+            <audio id="responseAudio" controls></audio>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Inicializar con el modelo actual desde el servidor
+    window.currentModel = '{{ current_model }}';
+    
+    // Fix para asegurar que el selector se actualice
+    window.addEventListener('load', function() {
+        // Esperar a que voiceChat esté listo
+        const checkVoiceChat = setInterval(function() {
+            if (window.voiceChat && window.voiceChat.loadModels) {
+                clearInterval(checkVoiceChat);
+                
+                // Forzar la carga de modelos después de un pequeño delay
+                setTimeout(function() {
+                    console.log('Forzando carga de modelos...');
+                    window.voiceChat.loadModels();
+                }, 1000);
+            }
+        }, 100);
+        
+        // Fix de respaldo si el selector no se actualiza
+        setTimeout(async function() {
+            const select = document.getElementById('modelSelect');
+            if (select && select.options.length <= 1) {
+                try {
+                    console.log('Aplicando fix de respaldo para selector...');
+                    const response = await fetch('/api/models');
+                    const data = await response.json();
+                    
+                    if (data.models && data.models.length > 0) {
+                        select.innerHTML = '';
+                        data.models.forEach(function(model) {
+                            const option = document.createElement('option');
+                            option.value = model.name;
+                            option.textContent = model.name + ' (' + (model.size / (1024 * 1024 * 1024)).toFixed(1) + ' GB)';
+                            if (model.name === data.current) {
+                                option.selected = true;
+                            }
+                            select.appendChild(option);
+                        });
+                        console.log('Selector actualizado con fix de respaldo');
+                    }
+                } catch (err) {
+                    console.error('Error en fix de respaldo:', err);
+                }
+            }
+        }, 3000);
+    });
+</script>
+{% endblock %}

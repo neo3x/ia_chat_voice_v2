@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Selector de Modelos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow: auto;
+        }
+        select {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test del Selector de Modelos</h1>
+        
+        <button onclick="testModels()">Probar Endpoint /api/models</button>
+        <button onclick="testHealth()">Probar Health Check</button>
+        <button onclick="clearLogs()">Limpiar Logs</button>
+        
+        <h3>Selector de Modelos:</h3>
+        <select id="modelSelect" onchange="changeModel()">
+            <option>Cargando...</option>
+        </select>
+        
+        <h3>Logs:</h3>
+        <pre id="logs"></pre>
+    </div>
+    
+    <script>
+        function log(message) {
+            const logs = document.getElementById('logs');
+            logs.textContent += new Date().toLocaleTimeString() + ' - ' + message + '\n';
+        }
+        
+        async function testModels() {
+            try {
+                log('Probando /api/models...');
+                const response = await fetch('/api/models');
+                const data = await response.json();
+                log('Respuesta: ' + JSON.stringify(data, null, 2));
+                
+                // Actualizar selector
+                const select = document.getElementById('modelSelect');
+                select.innerHTML = '';
+                
+                if (data.models && data.models.length > 0) {
+                    data.models.forEach(model => {
+                        const option = document.createElement('option');
+                        option.value = model.name;
+                        option.textContent = model.name;
+                        if (model.name === data.current) {
+                            option.selected = true;
+                        }
+                        select.appendChild(option);
+                    });
+                    log('Selector actualizado con ' + data.models.length + ' modelos');
+                } else {
+                    select.innerHTML = '<option>No hay modelos</option>';
+                    log('No se encontraron modelos');
+                }
+            } catch (err) {
+                log('ERROR: ' + err.message);
+            }
+        }
+        
+        async function testHealth() {
+            try {
+                log('Probando /health...');
+                const response = await fetch('/health');
+                const data = await response.json();
+                log('Health: ' + JSON.stringify(data, null, 2));
+            } catch (err) {
+                log('ERROR: ' + err.message);
+            }
+        }
+        
+        async function changeModel() {
+            const select = document.getElementById('modelSelect');
+            const model = select.value;
+            log('Cambiando a modelo: ' + model);
+            
+            try {
+                const response = await fetch('/api/change-model', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({model: model})
+                });
+                const data = await response.json();
+                log('Respuesta: ' + JSON.stringify(data));
+            } catch (err) {
+                log('ERROR: ' + err.message);
+            }
+        }
+        
+        function clearLogs() {
+            document.getElementById('logs').textContent = '';
+            log('Logs limpiados');
+        }
+        
+        // Cargar modelos al inicio
+        window.onload = () => {
+            log('Página cargada');
+            testModels();
+        };
+    </script>
+</body>
+</html>
