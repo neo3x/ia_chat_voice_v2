@@ -67,12 +67,23 @@ class VoiceChat {
         });
         
         // Enter para enviar mensaje
-        document.getElementById('textInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                this.sendText();
-            }
-        });
+        const textInput = document.getElementById('textInput');
+        if (textInput) {
+            textInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.sendText();
+                }
+            });
+            
+            // También agregar evento keydown para mayor compatibilidad
+            textInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.sendText();
+                }
+            });
+        }
         
         // Hacer sendText accesible desde el botón
         const sendBtn = document.getElementById('sendBtn');

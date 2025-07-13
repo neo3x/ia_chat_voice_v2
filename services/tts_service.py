@@ -44,14 +44,16 @@ class TTSService:
             logger.error(f"Error generando audio: {e}")
             return None
     
-    def _clean_text_for_speech(self, text: str) -> str:
-        """Limpiar texto para síntesis de voz"""
-        # Eliminar emojis
+        def _clean_text_for_speech(self, text: str) -> str:
+         """Limpiar texto para síntesis de voz"""
+        # Eliminar emojis - patrón más completo
         emoji_pattern = re.compile("["
             u"\U0001F600-\U0001F64F"  # emoticons
             u"\U0001F300-\U0001F5FF"  # symbols & pictographs
             u"\U0001F680-\U0001F6FF"  # transport & map symbols
             u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+            u"\U00002600-\U000027BF"  # Miscellaneous symbols
+            u"\U0001F900-\U0001F9FF"  # Supplemental symbols and pictographs
             u"\U00002702-\U000027B0"
             u"\U000024C2-\U0001F251"
             "]+", flags=re.UNICODE)
@@ -63,6 +65,9 @@ class TTSService:
         # Eliminar asteriscos y guiones bajos (formato markdown)
         text = re.sub(r'[*_]{1,2}([^*_]+)[*_]{1,2}', r'\1', text)
         
+        # Eliminar caracteres especiales que puedan causar problemas
+        text = re.sub(r'[^\w\s.,;:!?¿¡áéíóúñÁÉÍÓÚÑ\-]', '', text)
+        
         # Eliminar múltiples espacios
         text = re.sub(r'\s+', ' ', text)
         
@@ -70,7 +75,7 @@ class TTSService:
         text = text.strip()
         
         return text
-    
+
     async def _generate_audio_async(self, text: str, voice: str) -> Optional[str]:
         """Generar audio de forma asíncrona"""
         temp_path = None
