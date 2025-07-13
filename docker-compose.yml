@@ -27,8 +27,12 @@ services:
       - OLLAMA_PORT=11434
       - ENABLE_HTTPS=true
       - WHISPER_DEVICE=${WHISPER_DEVICE:-cpu}  # Auto-detecta o usa CPU
+      - PYTHONUNBUFFERED=1  # Para ver los logs en tiempo real
     volumes:
       - ./certs:/app/certs
+      - .:/app  # Monta todo el código fuente
+      - /app/__pycache__  # Excluye cache de Python
+      - /app/.pytest_cache  # Excluye cache de pytest
     depends_on:
       - ollama
     deploy:
@@ -40,6 +44,7 @@ services:
               capabilities: [gpu]
     restart: unless-stopped
     # Si no tienes GPU, comenta las líneas del deploy
+    command: python app.py  # Comando explícito para ejecutar
 
 volumes:
   ollama_data:
