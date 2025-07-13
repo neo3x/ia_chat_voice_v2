@@ -67,6 +67,8 @@ def chat():
         current_model = session.get('current_model', Config.DEFAULT_MODEL)
         bot_response = ollama_client.get_response(messages, current_model)
         
+        logger.info(f"Respuesta de Ollama: {bot_response}")
+        
         if bot_response:
             # Agregar respuesta a la conversación
             conversation_manager.add_message(session_id, "assistant", bot_response)
@@ -79,6 +81,7 @@ def chat():
                 'audio': audio_base64
             })
         else:
+            logger.error("No se recibió respuesta de Ollama")
             return jsonify({'error': 'Error getting response from Ollama'}), 500
             
     except Exception as e:
@@ -131,6 +134,7 @@ def process_audio():
                 'audio_response': audio_base64
             })
         else:
+            logger.error("No se recibió respuesta de Ollama")
             return jsonify({'error': 'Error getting response from Ollama'}), 500
             
     except Exception as e:
