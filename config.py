@@ -35,7 +35,7 @@ class Config:
     # Configuración de límites
     MAX_RECORDING_DURATION = int(os.getenv('MAX_RECORDING_DURATION', '60'))
     MAX_RESPONSE_LENGTH = int(os.getenv('MAX_RESPONSE_LENGTH', '2000'))
-    MAX_CONVERSATION_LENGTH = 20  # Número máximo de mensajes en el historial
+    MAX_CONVERSATION_LENGTH = 20
     
     # Configuración de audio
     SILENCE_THRESHOLD = int(os.getenv('SILENCE_THRESHOLD', '500'))
@@ -50,7 +50,9 @@ class Config:
     KEY_PATH = '/app/certs/key.pem'
     
     # Mensaje de sistema para el modelo
-    SYSTEM_MESSAGE = """Eres un asistente de voz amigable y útil. 
-Responde SIEMPRE en español. 
-NO uses emojis, emoticones ni caracteres especiales.
-Sé claro, directo y conversacional."""
+    SYSTEM_MESSAGE = """Eres un asistente de voz amigable. Debes seguir estas reglas:
+1. Responde SIEMPRE en español
+2. NO uses asteriscos para acciones (como *adjusts glasses* o *sonríe*)
+3. NO uses emojis ni emoticones
+4. Sé directo y conversacional
+5. Usa lenguaje natural sin caracteres especiales"""
